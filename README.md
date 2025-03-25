@@ -1,0 +1,2 @@
+# Spaghetti_Python_Rewrite
+用于重写一些自己见到的、来自一些python功底不太好的科研人的代码，以防止读代码时的血压飙升。
