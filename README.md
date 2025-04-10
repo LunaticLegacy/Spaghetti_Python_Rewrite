@@ -138,7 +138,7 @@ class Logistic(nn.Module):
     """
     def __init__(self, in_channels: int, out_channels: int):
         super().__init__()
-        self.linear = nn.linear(in_channels=in_channels, out_channels=out_channels)
+        self.linear = nn.Linear(in_channels=in_channels, out_channels=out_channels)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
