@@ -137,6 +137,7 @@ class Logistic(nn.Module):
     演示用的logisitc结构。
     """
     def __init__(self, in_channels: int, out_channels: int):
+        super().__init__()
         self.linear = nn.linear(in_channels=in_channels, out_channels=out_channels)
         self.sigmoid = nn.Sigmoid()
 
@@ -148,6 +149,7 @@ class Model(nn.Module):
     模型类。
     """
     def __init__(self):
+        super().__init__()
         self.logistic = Logistic
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.logistic(x)
@@ -167,6 +169,7 @@ class Model(nn.Module):
     模型类。
     """
     def __init__(self, **kwargs):    # 参数中必须包含learning_rate
+        super().__init__()
         # ... 其他模型实现
 
         self.learning_rate = learning_rate
