@@ -112,7 +112,7 @@ from typing import Union
 def func6(var9: Union[str, int]) -> Union[str, int]:
     return var9 * 2
 ```
-注意：如果你使用了Union作为类型注解，请**确保代码内部逻辑可以正确处理不同的类型**。
+注意：如果你使用了Union作为类型注解，请**确保代码内部逻辑可以正确处理不同的类型**。<br>
 反例：
 ```
 from typing import Union
@@ -123,7 +123,73 @@ def func12(var1: Union[int, str]) -> int:
 # TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'int'
 ```
 
-# Part 3:
+# Part 3: 关于PyTorch库的一些小技巧
+注意：本Part的内容仅为个人开发时的经验。
+## 3.1 训练流（仅建议）
+所有训练流中的所有模块建议全部使用**封装在torch.nn.Module的子类内**。<br>
+例：
 ```
-raise NotImplementedError("未完待续……作者：月と猫 - LunaNeko，最后更新日期：2025/3/25")
+import torch
+import torch.nn as nn
+
+class Logistic(nn.Module):
+    """
+    演示用的logisitc结构。
+    """
+    def __init__(self, in_channels: int, out_channels: int):
+        self.linear = nn.linear(in_channels=in_channels, out_channels=out_channels)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.sigmoid(self.linear(x))
+
+class Model(nn.Module):
+    """
+    模型类。
+    """
+    def __init__(self):
+        self.logistic = Logistic
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.logistic(x)
+```
+个人不推荐将训练流的内容封装在函数内。<br>
+
+## 3.2 反向传播过程封装
+按照我的代码习惯，我喜欢在模型类内定义一个backward方法作为反向传播流（并封装），并在__init__方法中封装对应的损失函数、优化器及超参数调节器。<br>
+并且，我喜欢在backward方法中返回当前反向传播过程损失。
+例：
+```
+import torch
+import torch.nn as nn
+
+class Model(nn.Module):
+    """
+    模型类。
+    """
+    def __init__(self, **kwargs):    # 参数中必须包含learning_rate
+        # ... 其他模型实现
+
+        self.learning_rate = learning_rate
+        self.loss_func = nn.CrossEntropyLoss()
+        self.optimizer = torch.optim.AdamW(
+            self.parameters(),
+            lr=self.learning_rate,
+            betas=(0.9, 0.999),
+            weight_decay=1e-3
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        # 对应的前向传播方法实现
+
+    def backward(self, input: torch.Tensor, target: torch.Tensor) -> float:
+        loss = self.loss_func(input, target)
+        loss.backward()
+        self.optimizer.step()
+        self.optimizer.zero_grad()
+        return loss.item()
+
+```
+
+```
+raise NotImplementedError("未完待续……作者：月と猫 - LunaNeko，最后更新日期：2025/4/10")
 ```
